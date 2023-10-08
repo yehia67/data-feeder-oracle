@@ -1,0 +1,9 @@
+{
+  "name": "data-feeder-oracle",
+  "version": "1.0.0",
+  "description": "data feeder oracle is a server to update the smart contract values",
+  "main": "index.js",
+  "repository": "https://github.com/yehia67/data-feeder-oracle",
+  "author": "Yehia Tarek",
+  "license": "APACHE-2.0"
+}
