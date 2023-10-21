@@ -10,6 +10,32 @@ Backend Repository(this one)
 
 Frontend Repository(soon)
 
+### Run & Install
+
+Create `.env` file from `.env.example` and set all variable values
+
+```
+cp .env.example .env
+```
+
+Install packages using yarn
+
+```
+yarn
+```
+
+For Dev mode run
+
+```
+yarn start:dev
+```
+
+For production mode run
+
+```
+yarn build && yarn start
+```
+
 ### Learn More About Oracle
 
 ![Oracle Basics](./oracle-basics.png)
