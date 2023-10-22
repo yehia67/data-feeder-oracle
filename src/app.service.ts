@@ -1,56 +1,65 @@
-import { Injectable } from '@nestjs/common';
-import { ethers } from 'ethers';
-import { BATCH_SIZE, MAX_RETRIES, SLEEP_TIME } from './common/constants';
-import { provider } from './common/providers/web3';
+import { Injectable } from "@nestjs/common";
+import { Contract, ethers } from "ethers";
+
+import { BATCH_SIZE, RAND_CALLER, RandOracles } from "./common/constants";
+import { provider } from "./common/providers/web3";
 
 @Injectable()
 export class AppService {
   getHello(): string {
-    return 'Hello World!';
+    return "The oracle is running";
   }
-
-  async getRandomNumber() {
-    // Initialize contract
-    const oracleContractAddress = 'ORACLE-CONTRACT-ADDRESS-HERE';
-    const oracleContractABI = []; // abi to be added
-    const oracleContract = new ethers.Contract(
-      oracleContractAddress,
-      oracleContractABI,
+  private oracleContract: Contract;
+  private signer: ethers.Wallet;
+  constructor() {
+    this.oracleContract = new ethers.Contract(
+      RandOracles.address,
+      RandOracles.abis,
       provider,
     );
+    this.signer = new ethers.Wallet(process.env.ORACLE_PRIVATE_KEY, provider);
 
+    this.onRandomOracle();
+  }
+
+  async onRandomOracle() {
+    const eventFilter: ethers.DeferredTopicFilter =
+      this.oracleContract.filters.RandomNumberRequested();
     // Populate requests queue
     const requestsQueue = [];
+    while (true) {
+      const latestBlock = await provider.getBlockNumber();
 
-    oracleContract.on('RandomNumberRequested', async (callerAddress, id) => {
-      requestsQueue.push({ callerAddress, id });
-    });
+      const [event] = (await this.oracleContract.queryFilter(
+        eventFilter,
+        latestBlock,
+        latestBlock,
+      )) as ethers.EventLog[];
 
-    // Poll and process requests queue at intervals
-    setInterval(async () => {
+      if (event) {
+        const tx = await event.getTransaction();
+        requestsQueue.push({ callerAddress: tx.from, id: event.args[0] });
+      }
+      // Poll and process requests queue at intervals
       let processedRequests = 0;
 
       while (requestsQueue.length > 0 && processedRequests < BATCH_SIZE) {
-        const request = requestsQueue.shift();
+        try {
+          const request = requestsQueue.shift();
 
-        let retries = 0;
-        while (retries < MAX_RETRIES) {
-          try {
-            const randomNumber = await this.getRandomNumber();
+          const randomNumber = Math.random(); // to be an api call later
+          const tx = await (
+            await this.oracleContract
+              .connect(this.signer)
+              ["returnRandomNumber"](randomNumber, RAND_CALLER, request.id)
+          ).wait();
+          console.log({ tx });
 
-            await oracleContract.returnRandomNumber(
-              randomNumber,
-              request.callerAddress,
-              request.id,
-            );
-            break;
-          } catch (error) {
-            retries++;
-          }
+          processedRequests++;
+        } catch (error) {
+          console.error(error);
         }
-
-        processedRequests++;
       }
-    }, SLEEP_TIME);
+    }
   }
 }

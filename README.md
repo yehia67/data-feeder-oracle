@@ -4,7 +4,7 @@ Data Feeder is an oracle deployed on Topos, a fully interoperable blockchain by 
 
 ### Data Feeder Repositories
 
-[Smart Contract Repository](https://github.com/yehia67/data-feeder)
+[Smart Contract Repository](https://github.com/yehia67/data-feeder-sm)
 
 Backend Repository(this one)
 
