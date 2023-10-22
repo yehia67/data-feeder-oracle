@@ -4,6 +4,32 @@ export const RandOracles = Object.freeze({
     {
       inputs: [
         {
+          internalType: "bytes32",
+          name: "_apiKey",
+          type: "bytes32",
+        },
+      ],
+      name: "addNewApiKey",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [],
+      name: "apiLimit",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
           internalType: "uint256",
           name: "id",
           type: "uint256",

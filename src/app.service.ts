@@ -3,11 +3,12 @@ import { Contract, ethers } from "ethers";
 
 import { BATCH_SIZE, RAND_CALLER, RandOracles } from "./common/constants";
 import { provider } from "./common/providers/web3";
+import { randomUUID } from "crypto";
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return "The oracle is running";
+  generateApiKey() {
+    return { message: `Welcome to data feeder Oracle`, apiKey: randomUUID() };
   }
   private oracleContract: Contract;
   private signer: ethers.Wallet;
