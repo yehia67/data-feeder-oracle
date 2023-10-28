@@ -48,7 +48,7 @@ export class AppService {
         try {
           const request = requestsQueue.shift();
 
-          const randomNumber = Math.random(); // to be an api call later
+          const randomNumber = Math.floor(Math.random()); // to be an api call later
           const tx = await (
             await this.oracleContract
               .connect(this.signer)

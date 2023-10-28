@@ -1,5 +1,5 @@
 export const RandOracles = Object.freeze({
-  address: "0x027d75ed5235693382fcd98389D71266e1493662",
+  address: "0x7d2fde48f4a7A8e309B9ed62a9a6a223b4dEbC34",
   abis: [
     {
       inputs: [
