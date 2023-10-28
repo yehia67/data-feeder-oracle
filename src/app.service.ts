@@ -1,9 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import { Contract, ethers } from "ethers";
 
-import { BATCH_SIZE, RAND_CALLER, RandOracles } from "./common/constants";
+import { BATCH_SIZE, OracleApi } from "./common/constants";
 import { provider } from "./common/providers/web3";
 import { randomUUID } from "crypto";
+import axios from "axios";
+import { IApiOracle } from "./interfaces";
 
 @Injectable()
 export class AppService {
@@ -14,8 +16,8 @@ export class AppService {
   private signer: ethers.Wallet;
   constructor() {
     this.oracleContract = new ethers.Contract(
-      RandOracles.address,
-      RandOracles.abis,
+      OracleApi.address,
+      OracleApi.abis,
       provider,
     );
     this.signer = new ethers.Wallet(process.env.ORACLE_PRIVATE_KEY, provider);
@@ -25,9 +27,9 @@ export class AppService {
 
   async onRandomOracle() {
     const eventFilter: ethers.DeferredTopicFilter =
-      this.oracleContract.filters.RandomNumberRequested();
+      this.oracleContract.filters.OracleRequested();
     // Populate requests queue
-    const requestsQueue = [];
+    const requestsQueue: IApiOracle[] = [];
     while (true) {
       const latestBlock = await provider.getBlockNumber();
 
@@ -39,7 +41,11 @@ export class AppService {
 
       if (event) {
         const tx = await event.getTransaction();
-        requestsQueue.push({ callerAddress: tx.from, id: event.args[0] });
+        requestsQueue.push({
+          callerAddress: tx.from,
+          id: event.args[0],
+          url: event.args[2],
+        });
       }
       // Poll and process requests queue at intervals
       let processedRequests = 0;
@@ -48,11 +54,19 @@ export class AppService {
         try {
           const request = requestsQueue.shift();
 
-          const randomNumber = Math.floor(Math.random()); // to be an api call later
+          const oracleValue = await axios.get(request.url); // to be an api call later
+          if (!oracleValue.data) {
+            throw new ServiceUnavailableException(oracleValue.status);
+          }
+          console.log({ response: oracleValue.data });
           const tx = await (
             await this.oracleContract
               .connect(this.signer)
-              ["returnRandomNumber"](randomNumber, RAND_CALLER, request.id)
+              ["setOracleResult"](
+                request.id,
+                request.url,
+                JSON.stringify(oracleValue.data),
+              )
           ).wait();
           console.log({ tx });
 
