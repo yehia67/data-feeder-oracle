@@ -1,7 +1,16 @@
-export type OracleType = "OracleApi";
+export type OracleType = "OracleApi" | "OraclePrice";
 
-export interface IApiOracle {
+export interface IBaseOracle {
   id: string;
-  url: string;
   oracleType: OracleType;
 }
+export interface IApiOracle extends IBaseOracle {
+  url: string;
+}
+
+export interface IOraclePrice extends IBaseOracle {
+  fiatSymbol: string;
+  ccSymbol: string;
+}
+
+export type IOracleRequest = IApiOracle | IOraclePrice;
