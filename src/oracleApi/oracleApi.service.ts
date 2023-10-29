@@ -4,7 +4,7 @@ import {
   IListenToApiOracle,
   IListenToPriceOracle,
 } from "./oracleApi.interface";
-import { parseEther, parseUnits } from "ethers";
+import { parseUnits } from "ethers";
 
 @Injectable()
 export class OracleApiService {
