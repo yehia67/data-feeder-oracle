@@ -1,2 +1,2 @@
 export * from "./web3";
-export * from "./ApiOracle";
+export * from "./shared";
