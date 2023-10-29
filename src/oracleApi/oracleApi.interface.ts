@@ -1,7 +1,14 @@
 import type { ethers } from "ethers";
-import type { IApiOracle } from "src/interfaces";
+import type { IApiOracle, IOraclePrice } from "src/interfaces";
 
-export interface IListenToOracleApi {
+export interface IListenToBaseOracle {
+  oracleContract: ethers.BaseContract;
+}
+
+export interface IListenToApiOracle extends IListenToBaseOracle {
   request: IApiOracle;
-  oracleApiContract: ethers.BaseContract;
+}
+
+export interface IListenToPriceOracle extends IListenToBaseOracle {
+  request: IOraclePrice;
 }

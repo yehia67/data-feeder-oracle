@@ -1,9 +1,33 @@
 import { BaseOracle } from "./BaseOracle";
 
-export const OracleApi = Object.freeze({
-  address: "0x1B6F71B2Bae5FCEE6Cc68A228e3B4549927Ad80B",
+export const OraclePrice = Object.freeze({
+  address: "0x1e2928B34D1E4D46aBC1b5D497fFdaB5459A0bbA",
   abis: [
     ...BaseOracle.abi,
+    {
+      inputs: [
+        {
+          internalType: "string",
+          name: "fiatSymbol",
+          type: "string",
+        },
+        {
+          internalType: "string",
+          name: "ccSymbol",
+          type: "string",
+        },
+      ],
+      name: "requestOracle",
+      outputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      stateMutability: "payable",
+      type: "function",
+    },
     {
       inputs: [
         {
@@ -13,13 +37,13 @@ export const OracleApi = Object.freeze({
         },
         {
           internalType: "string",
-          name: "url",
+          name: "fiatSymbol",
           type: "string",
         },
         {
-          internalType: "string",
-          name: "response",
-          type: "string",
+          internalType: "uint256",
+          name: "ccValue",
+          type: "uint256",
         },
       ],
       name: "setOracleResult",
@@ -39,8 +63,14 @@ export const OracleApi = Object.freeze({
         {
           indexed: false,
           internalType: "string",
-          name: "value",
+          name: "fiatName",
           type: "string",
+        },
+        {
+          indexed: false,
+          internalType: "uint256",
+          name: "cryptoValue",
+          type: "uint256",
         },
       ],
       name: "OracleReturned",
@@ -64,7 +94,13 @@ export const OracleApi = Object.freeze({
         {
           indexed: false,
           internalType: "string",
-          name: "url",
+          name: "fiatSymbol",
+          type: "string",
+        },
+        {
+          indexed: false,
+          internalType: "string",
+          name: "ccSymbol",
           type: "string",
         },
       ],
