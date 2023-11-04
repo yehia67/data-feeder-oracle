@@ -63,7 +63,6 @@ export class OracleApiService {
     oracleContract,
   }: IListenToPokemonOracle) {
     try {
-      console.log("call now");
       const getAllPokemon = await axios.get(
         "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=200",
       );
