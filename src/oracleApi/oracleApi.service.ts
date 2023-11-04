@@ -63,20 +63,10 @@ export class OracleApiService {
     oracleContract,
   }: IListenToPokemonOracle) {
     try {
-      const getAllPokemon = await axios.get(
-        "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=200",
-      );
-
-      if (!getAllPokemon.data) {
-        throw new ServiceUnavailableException(getAllPokemon.status);
-      }
       const randomPokemonId = Math.floor(Math.random() * 1017) + 1;
 
       const oracleValue = `https://pokeapi.co/api/v2/pokemon/${randomPokemonId}`;
-      console.log({
-        id: request.id,
-        address: request.submitter,
-      });
+
       const tx = await (
         await oracleContract["setOracleResult"](
           request.id,
