@@ -2,7 +2,6 @@ import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import axios from "axios";
 import {
   IListenToApiOracle,
-  IListenToBaseOracle,
   IListenToPokemonOracle,
   IListenToPriceOracle,
 } from "./oracleApi.interface";
