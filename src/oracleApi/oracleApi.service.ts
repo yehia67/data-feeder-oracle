@@ -2,6 +2,8 @@ import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import axios from "axios";
 import {
   IListenToApiOracle,
+  IListenToBaseOracle,
+  IListenToPokemonOracle,
   IListenToPriceOracle,
 } from "./oracleApi.interface";
 import { parseUnits } from "ethers";
@@ -48,6 +50,39 @@ export class OracleApiService {
             oracleValue.data[request.ccSymbol][request.fiatSymbol].toString(),
             6,
           ),
+        )
+      ).wait();
+      console.log({ tx });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async listenToOraclePokemon({
+    request,
+    oracleContract,
+  }: IListenToPokemonOracle) {
+    try {
+      console.log("call now");
+      const getAllPokemon = await axios.get(
+        "https://pokeapi.co/api/v2/pokemon/?offset=0&limit=200",
+      );
+
+      if (!getAllPokemon.data) {
+        throw new ServiceUnavailableException(getAllPokemon.status);
+      }
+      const randomPokemonId = Math.floor(Math.random() * 1017) + 1;
+
+      const oracleValue = `https://pokeapi.co/api/v2/pokemon/${randomPokemonId}`;
+      console.log({
+        id: request.id,
+        address: request.submitter,
+      });
+      const tx = await (
+        await oracleContract["setOracleResult"](
+          request.id,
+          request.submitter,
+          oracleValue,
         )
       ).wait();
       console.log({ tx });

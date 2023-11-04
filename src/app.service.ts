@@ -4,10 +4,16 @@ import { ethers } from "ethers";
 import { BATCH_SIZE, OracleApi } from "./common/constants";
 import { provider } from "./common/providers/web3";
 import { randomUUID } from "crypto";
-import { IApiOracle, IOraclePrice, IOracleRequest } from "./interfaces";
+import {
+  IApiOracle,
+  IPriceOracle,
+  IOracleRequest,
+  IPokemonOracle,
+} from "./interfaces";
 import { oracleListeners } from "./common/utils";
 import { OracleApiService } from "./oracleApi/oracleApi.service";
 import { OraclePrice } from "./common/constants/artifacts/OraclePrice";
+import { OraclePokemon } from "./common/constants/artifacts/OraclePokemon";
 
 @Injectable()
 export class AppService {
@@ -43,6 +49,12 @@ export class AppService {
       OraclePrice.abis,
       signer,
     );
+
+    const oraclePokemonContract = new ethers.Contract(
+      OraclePokemon.address,
+      OraclePokemon.abis,
+      signer,
+    );
     while (true) {
       const toBlock = await provider.getBlockNumber();
       fromBlock = fromBlock || toBlock;
@@ -51,6 +63,7 @@ export class AppService {
         fromBlock,
         oracleApiContract,
         oraclePriceContract,
+        oraclePokemonContract,
       });
 
       if (oracleEvents.length) {
@@ -70,6 +83,13 @@ export class AppService {
               oracleType,
             });
           }
+          if (oracleType === "OraclePokemon") {
+            requestsQueue.push({
+              id: (event as ethers.EventLog).args[0],
+              submitter: (event as ethers.EventLog).args[1],
+              oracleType,
+            });
+          }
         });
       }
       // Poll and process requests queue at intervals
@@ -86,8 +106,15 @@ export class AppService {
           }
           if (request.oracleType === "OraclePrice") {
             this.oracleApiService.listenToOraclePrice({
-              request: request as IOraclePrice,
+              request: request as IPriceOracle,
               oracleContract: oraclePriceContract,
+            });
+          }
+
+          if (request.oracleType === "OraclePokemon") {
+            this.oracleApiService.listenToOraclePokemon({
+              request: request as IPokemonOracle,
+              oracleContract: oraclePokemonContract,
             });
           }
 

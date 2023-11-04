@@ -1,4 +1,4 @@
-export type OracleType = "OracleApi" | "OraclePrice";
+export type OracleType = "OracleApi" | "OraclePrice" | "OraclePokemon";
 
 export interface IBaseOracle {
   id: string;
@@ -8,9 +8,13 @@ export interface IApiOracle extends IBaseOracle {
   url: string;
 }
 
-export interface IOraclePrice extends IBaseOracle {
+export interface IPriceOracle extends IBaseOracle {
   fiatSymbol: string;
   ccSymbol: string;
 }
 
-export type IOracleRequest = IApiOracle | IOraclePrice;
+export interface IPokemonOracle extends IBaseOracle {
+  submitter: string;
+}
+
+export type IOracleRequest = IApiOracle | IPriceOracle | IPokemonOracle;
