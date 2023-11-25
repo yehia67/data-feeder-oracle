@@ -1,4 +1,4 @@
-import { Injectable, ServiceUnavailableException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import axios from "axios";
 import type { IListenToOraclePrice } from "./oraclePrice.interface";
 
@@ -11,9 +11,9 @@ export class OraclePriceService {
     try {
       const oracleValue = await axios.get(request.url); // to be an Price call later
       if (!oracleValue.data) {
-        throw new ServiceUnavailableException(oracleValue.status);
+        console.error(oracleValue.status);
+        return;
       }
-      console.log({ response: oracleValue.data });
       const tx = await (
         await oraclePriceContract["setOracleResult"](
           request.id,
@@ -21,9 +21,13 @@ export class OraclePriceService {
           JSON.stringify(oracleValue.data),
         )
       ).wait();
-      console.log({ tx });
+      console.log(
+        `The Oracle price transaction hash ${
+          tx.hash
+        } in ${new Date().toISOString()}}`,
+      );
     } catch (error) {
-      throw new ServiceUnavailableException(error);
+      console.error(error);
     }
   }
 }

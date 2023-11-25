@@ -13,7 +13,8 @@ export class OracleApiService {
     try {
       const oracleValue = await axios.get(request.url); // to be an api call later
       if (!oracleValue.data) {
-        throw new ServiceUnavailableException(oracleValue.status);
+        console.error(oracleValue.status);
+        return;
       }
       const tx = await (
         await oracleContract["setOracleResult"](
@@ -28,7 +29,7 @@ export class OracleApiService {
         } in ${new Date().toISOString()}}`,
       );
     } catch (error) {
-      throw new ServiceUnavailableException(error);
+      console.error(error);
     }
   }
 
@@ -39,7 +40,8 @@ export class OracleApiService {
       ); // to be an api call later
 
       if (!oracleValue.data) {
-        throw new ServiceUnavailableException(oracleValue.status);
+        console.error(oracleValue.status);
+        return;
       }
 
       const tx = await (
@@ -59,7 +61,6 @@ export class OracleApiService {
       );
     } catch (error) {
       console.error(error);
-      throw new ServiceUnavailableException(error);
     }
   }
 
@@ -86,7 +87,6 @@ export class OracleApiService {
       );
     } catch (error) {
       console.error(error);
-      throw new ServiceUnavailableException(error);
     }
   }
 }
