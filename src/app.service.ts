@@ -24,12 +24,14 @@ export class AppService {
   }
 
   constructor() {
-    const onRandomOracleRef = this.onRandomOracle;
-    this.onRandomOracle()
-      .catch((error) => console.error(`Error on ${Date.now()} reason`, error))
-      .finally(function () {
-        onRandomOracleRef();
-      });
+    try {
+      this.onRandomOracle();
+    } catch (error) {
+      console.error(`Error on ${Date.now()} reason`, error);
+      this.onRandomOracle();
+    } finally {
+      this.onRandomOracle();
+    }
   }
 
   async onRandomOracle() {
