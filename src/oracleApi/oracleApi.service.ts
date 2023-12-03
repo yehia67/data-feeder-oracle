@@ -1,4 +1,4 @@
-import { Injectable, ServiceUnavailableException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import axios from "axios";
 import {
   IListenToApiOracle,
@@ -43,13 +43,14 @@ export class OracleApiService {
         console.error(oracleValue.status);
         return;
       }
-
       const tx = await (
         await oracleContract["setOracleResult"](
           request.id,
           request.fiatSymbol,
           parseUnits(
-            oracleValue.data[request.ccSymbol][request.fiatSymbol].toString(),
+            Number(
+              oracleValue.data[request.ccSymbol][request.fiatSymbol],
+            ).toFixed(2),
             6,
           ),
         )
