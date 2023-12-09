@@ -1,5 +1,5 @@
 export const OraclePokemon = Object.freeze({
-  address: "0x229D068d763018B92E25107A49D61882eEa48898",
+  address: "0xF177881Ee7ABbb5e737f4c0f8ac69B42C1898068",
   abis: [
     {
       inputs: [],
