@@ -1,1 +1,1 @@
-web: yarn yarn install --production=false && yarn start:dev
+web: yarn  install --production=false && yarn start:dev
