@@ -1,1 +1,1 @@
-web: docker build -t data-feeder-oracle .  && docker run -p 4000:4000  data-feeder-oracle    
+web: yarn  install && yarn build && yarn start
