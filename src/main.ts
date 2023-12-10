@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalFilters(new AllExceptionsFilter());
 
-  await app.listen(process.env.APP_PORT);
+  await app.listen(process.env.PORT || 4000);
 }
 
 bootstrap();
