@@ -1,7 +1,7 @@
 import { BaseOracle } from "./BaseOracle";
 
 export const OraclePrice = Object.freeze({
-  address: "0xE4688df8D063b8dC7D0a187737046D97D3EaB5ee",
+  address: "0xD28452eb1d98B2c7C60C784435EA6ED056EA02f8",
   abis: [
     ...BaseOracle.abi,
     {
