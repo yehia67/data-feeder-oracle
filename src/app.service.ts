@@ -19,14 +19,14 @@ export class AppService {
 
   constructor() {
     try {
-      this.onRandomOracle();
+      this.onListenToOracle();
     } catch (error) {
       console.error(`Error on ${Date.now()} reason`, error);
-      this.onRandomOracle();
+      this.onListenToOracle();
     }
   }
 
-  onRandomOracle() {
+  onListenToOracle() {
     console.log("Oracle start listening...");
     const signer = new ethers.Wallet(process.env.ORACLE_PRIVATE_KEY, provider);
 
